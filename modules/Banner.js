@@ -1,15 +1,28 @@
 const conn = require('../configs/dbmysql');
-const Banner = {
+
+const Banner ={
     getAll: (result) => {
-        conn.query("SELECT * FROM db_banner", function (err, banner) {
+        conn.query("select * from db_Banner", (err, banner, field) => {
             if (err) {
                 result(null);
             }
-            else {
+            else{
                 result(banner);
             }
+        })
+    },
+
+    getList: (position, mycallback) => {
+        const sql = `SELECT * FROM db_banner WHERE position ='${position}' AND status='1'`;
+        conn.query(sql, function (err, banners) {
+           if (err) {
+              mycallback(null);
+           } else {
+              mycallback(banners);
+           }
         });
-    }
+     },
+  
 }
 
 module.exports = Banner;

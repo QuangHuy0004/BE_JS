@@ -1,25 +1,23 @@
-const Brand = require('../modules/Brand');
+const Brand = require("../models/Brand");
 
-const BrandController = {    
+const BrandController = {
     index: (req, res) => {
         Brand.getAll((data) => {
             if (data == null) {
                 return res.status(200).json({
-                    brand: null,
+                    brands: null,
                     status: false,
-                    message: "Khong tim thay du lieu"
+                    message: "khong co du lieu"
                 });
-            }
-            else {
+            } else {
                 return res.status(200).json({
-                    brand: data,
+                    brands: data,
                     status: true,
-                    message: "Tim thay du lieu thanh cong"
+                    message: "Tai du lieu thanh cong"
                 });
             }
         })
+    }
+}
 
-    },
-};
-
-module.exports = BrandController;
+module.exports = BrandController

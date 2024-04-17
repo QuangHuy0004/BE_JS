@@ -1,25 +1,24 @@
-const Post = require('../modules/Post');
+const Post = require("../models/Post");
 
-const PostController = {    
+const PostController = {
     index: (req, res) => {
         Post.getAll((data) => {
             if (data == null) {
                 return res.status(200).json({
-                    post: null,
+                    posts: null,
                     status: false,
-                    message: "Khong tim thay du lieu"
+                    message: "khong co du lieu"
                 });
-            }
-            else {
+            } else {
                 return res.status(200).json({
-                    post: data,
+                    posts: data,
                     status: true,
-                    message: "Tim thay du lieu thanh cong"
+                    message: "Tai du lieu thanh cong"
                 });
             }
         })
 
-    },
-};
+    }
+}
 
 module.exports = PostController;

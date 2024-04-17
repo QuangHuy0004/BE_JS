@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const Post_Controller = require('../controllers/PostController');
+const router = express.Router();
+
 
 router.get('/index', Post_Controller.index);
 // router.get('/show/:id', Category_Controller.show);

@@ -1,22 +1,18 @@
 const express = require('express')
-const app = express();
-const cors = require('cors');
+const app = express()
 const apiRoutes = require("./routers");
-const bodyParser = require('body-parser');
-const path = require('path');
-const conn = require('./configs/dbmysql');
-const port = 5000;
-
-
+const cors = require('cors')
+const bodyParser = require("body-parser");
+const fileupload = require("express-fileupload");
+const path = require("path");
+const port = 8080
+app.use(cors())
+app.use(fileupload());
 app.use("/assets", express.static(path.join(__dirname, "/assets")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
-
 apiRoutes(app);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
-});
-
-module.exports = conn;
+})
