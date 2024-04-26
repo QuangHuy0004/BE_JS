@@ -1,14 +1,34 @@
 const myslug = (text) => {
-    return text
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-') // Thay dấu cách bằng dấu gạch ngang
-      .replace(/[^\w\-]+/g, '') // Loại bỏ các ký tự không phải chữ cái, số, hoặc gạch ngang
-      .replace(/\-\-+/g, '-') // Loại bỏ các dấu gạch ngang liên tiếp
-      .replace(/^-+/, '') // Loại bỏ dấu gạch ngang ở đầu
-      .replace(/-+$/, ''); // Loại bỏ dấu gạch ngang ở cuối
+  const vnAccentsMap = {
+    áàảãạăắằẳẵặâấầẩẫậ: "a",
+    éèẻẽẹêếềểễệ: "e",
+    íìỉĩị: "i",
+    óòỏõọôốồổỗộơớờởỡợ: "o",
+    úùủũụưứừửữự: "u",
+    ýỳỷỹỵ: "y",
+    đ: "d",
   };
-  
-  module.exports = myslug;
-  
+
+  // Chuyển đổi các ký tự tiếng Việt có dấu thành ký tự tiếng Anh không dấu
+  const convertToEnglish = (char) => {
+    for (let accents in vnAccentsMap) {
+      if (accents.includes(char)) {
+        return vnAccentsMap[accents];
+      }
+    }
+    return char;
+  };
+
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/./g, convertToEnglish) // Chuyển đổi từng ký tự thành tiếng Anh không dấu
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
+
+module.exports = myslug;

@@ -21,35 +21,35 @@ const CategoryController = {
       return res.status(200).json(result);
     }
   },
-  show: async (req, res) => {
-    try {
-      const id = req.params.id;
-      await Category.getById(id, function (category) {
-        if (category == null) {
-          const result = {
-            category: null,
-            status: false,
-            message: "Không tìm thấy dữ liệu!",
-          };
-          return res.status(200).json(result);
-        } else {
-          const result = {
-            category: category,
-            status: true,
-            message: "Tải dữ liệu thành công!",
-          };
-          return res.status(200).json(result);
-        }
-      });
-    } catch (error) {
-      const result = {
-        category: null,
-        status: false,
-        message: error.message,
-      };
-      return res.status(200).json(result);
-    }
-  },
+  // show: async (req, res) => {
+  //   try {
+  //     const id = req.params.id;
+  //     await Category.getById(id, function (category) {
+  //       if (category == null) {
+  //         const result = {
+  //           category: null,
+  //           status: false,
+  //           message: "Không tìm thấy dữ liệu!",
+  //         };
+  //         return res.status(200).json(result);
+  //       } else {
+  //         const result = {
+  //           category: category,
+  //           status: true,
+  //           message: "Tải dữ liệu thành công!",
+  //         };
+  //         return res.status(200).json(result);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     const result = {
+  //       category: null,
+  //       status: false,
+  //       message: error.message,
+  //     };
+  //     return res.status(200).json(result);
+  //   }
+  // },
   store: async (req, res) => {
     try {
       const formBody = req.body;
@@ -64,7 +64,7 @@ const CategoryController = {
         image: image.name,
         description: formBody.description,
         status: formBody.status,
-        slug: "ho-dien-loi",
+        slug: myslug(formBody.name),
         created_at: "2000-2-2 10:22:11",
       };
       await Category.store(category, function (data) {
@@ -158,6 +158,7 @@ const CategoryController = {
       return res.status(200).json(result);
     }
   },
+  
 };
 
 module.exports = CategoryController;

@@ -1,12 +1,18 @@
-const express = require('express');
-const Post_Controller = require('../controllers/PostController');
+const express = require("express");
+const PostController = require("../controllers/PostController");
 const router = express.Router();
 
-
-router.get('/index', Post_Controller.index);
-// router.get('/show/:id', Category_Controller.show);
-// router.post('/store',Category_Controller.store);
-// router.patch('/update/:id',Category_Controller.update);
-// router.delete('/delete/:id',Category_Controller.delete);
+router.get("/index", PostController.index);
+router.get("/list/:type/:page/:limit", PostController.list);
+router.get("/listbytopicid/:topicid", PostController.listbytopicid);
+router.get("/listpostpage/:topicid/:page/:limit", PostController.listpostpage);
+router.get("/listbytype/:type", PostController.listbytype);
+router.get("/listnew/:type/:limit", PostController.listnew);
+router.get("/pagedetail/:slug", PostController.pagedetail);
+router.get("/postdetail/:slug/:limit", PostController.postdetail);
+router.get("/show/:id", PostController.show);
+router.post("/store", PostController.store);
+router.put("/update/:id", PostController.edit);
+router.delete("/delete/:id", PostController.delete);
 
 module.exports = router;

@@ -7,7 +7,7 @@
     "start": "nodemon server.js"
   },
   "keywords": [],
-  "author": "khoinguyen",
+  "author": "tranquanghuy",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",

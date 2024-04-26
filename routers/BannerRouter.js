@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Banner_Controller = require('../controllers/BannerController');
+const BannerController = require("../controllers/BannerController");
 
-// router.get('/index', Banner_Controller.index);
-router.get("/list/:position", Banner_Controller.list);
-// router.get('/show/:id', Category_Controller.show);
-// router.post('/store',Category_Controller.store);
-// router.patch('/update/:id',Category_Controller.update);
-// router.delete('/delete/:id',Category_Controller.delete);
+router.get("/index", BannerController.index);
+router.get("/list/:position", BannerController.list);
+router.get('/show/:id', BannerController.show);
+router.post('/store',BannerController.store);
+router.put('/update/:id',BannerController.edit);
+router.delete('/delete/:id',BannerController.delete);
 
 module.exports = router;

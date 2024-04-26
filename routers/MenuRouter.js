@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const Menu_Controller = require('../controllers/MenuController');
+const MenuController = require("../controllers/MenuController");
 
-// router.get('/index', Menu_Controller.index);
-// router.get("/show/:id", Menu_Controller.show);
-// router.post("/store", Menu_Controller.store);
-// router.put("/edit/:id", Menu_Controller.edit);
-// router.delete("/delete/:id", Menu_Controller.delete);
-router.get("/list/:parentid/:limit", Menu_Controller.list);
+router.get("/index", MenuController.index);
+router.get("/list/:parentid/:position/:level", MenuController.list);
+router.get('/show/:id', MenuController.show);
+router.post('/store',MenuController.store);
+router.put('/update/:id',MenuController.edit);
+router.delete('/delete/:id',MenuController.delete);
+
 module.exports = router;
