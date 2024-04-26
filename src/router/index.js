@@ -4,7 +4,7 @@ import FrontendRouter from './FrontendRouter';
 const AppRouter = 
 {
     FrontendRouter: FrontendRouter,
-    BackendRouter: BackendRouter
+    BackendRouter: BackendRouter,
 }
 
 export default AppRouter;

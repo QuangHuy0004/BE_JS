@@ -1104,7 +1104,9 @@ margin: 34px 0px ;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
 }
-
+.pagination .page-item .page-link {
+  color: black;
+}
 .product__item__text .rating {
 	margin-bottom: 6px;
 }
@@ -1943,13 +1945,27 @@ margin: 34px 0px ;
 .product__details__tab__content__item p {
 	margin-bottom: 0;
 }
-
+.custom-label {
+	position: absolute; /* Đặt vị trí tuyệt đối */
+	top: 0; /* Đặt vị trí đỉnh của hình ảnh */
+	left: 0; /* Đặt vị trí bên trái của hình ảnh */
+	z-index: 1; /* Đặt z-index cao hơn để chồng lên phần tử khác */
+  }
+  
 /*---------------------
   Related
 -----------------------*/
 
 .related {
-	padding-bottom: 55px;
+	padding-bottom: 5px;
+}
+.relatedtitle {
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  top: 0; /* Đặt vị trí đỉnh của phần tử */
+  left: 0; /* Đặt vị trí bên trái của phần tử */
+  background-color: white; /* Đặt màu nền cho phần tử */
+  padding: 10px; /* Đặt khoảng cách lề bên trong của phần tử */
+  z-index: 1; /* Đặt z-index cao hơn để chồng lên phần tử khác */
 }
 
 .related-title {
@@ -2362,7 +2378,7 @@ margin: 34px 0px ;
 
 .shopping__cart__table table tbody tr td.product__cart__item .product__cart__item__pic {
 	float: left;
-	margin-right: 30px;
+	margin-right: 10px;
 }
 
 .shopping__cart__table table tbody tr td.product__cart__item .product__cart__item__text {

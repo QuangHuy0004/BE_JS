@@ -1,45 +1,122 @@
-import React, { useState } from "react";
-import Data from "../../../public/database.json";
-import { FaSave } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { IoIosAdd } from "react-icons/io";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaSave } from "react-icons/fa";
+import BrandServices from "./../../../services/BrandServices";
+import { MdDelete } from "react-icons/md";
+import { ImgUrl } from "../../../basePath/ImgUrl";
 
 const BrandCreate = () => {
-  const brands = Data.brands;
+  const [load, setLoad] = useState(1);
+  const [brands, setBrand] = useState([]);
+  const [editId, setEditId] = useState(null);
   const [data, setData] = useState({
+    id: "",
     name: "",
     description: "",
-    parent_id: 1,
     img: "",
     status: 1,
   });
+
+  useEffect(() => {
+    (async () => {
+      const result = await BrandServices.get_list();
+      setBrand(result.brands);
+    })();
+  }, [load]);
+
   const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData((values) => ({ ...values, [name]: value }));
+    const { name, value } = event.target;
+    setData((prevData) => ({ ...prevData, [name]: value }));
   };
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(data);
-    setData({
-      name: "",
-      description: "",
-      parent_id: 1,
-      img: "",
-      status: 1,
-    });
+    const image = document.querySelector("#image");
+    const brandData = new FormData();
+    brandData.append("id", data.id);
+    brandData.append("name", data.name);
+    brandData.append("description", data.description);
+    brandData.append("status", data.status);
+    brandData.append("image", image.files.length === 0 ? null : image.files[0]);
+
+    try {
+      const result = await BrandServices.store(brandData);
+      if (result.status) {
+        alert(result.message);
+        setData({
+          id: "",
+          name: "",
+          description: "",
+          status: 1,
+        });
+        image.value = null;
+        setLoad((prevLoad) => prevLoad + 1);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   };
+
+  const handleEdit = (id) => {
+    setEditId(id);
+    const editBrand = brands.find((brand) => brand.id === id);
+    if (editBrand) {
+      setData({
+        id: editBrand.id,
+        name: editBrand.name,
+        description: editBrand.description,
+        status: editBrand.status,
+      });
+    }
+  };
+
+  const handleSave = async () => {
+    const image = document.querySelector("#image");
+    const brandData = new FormData();
+    brandData.append("id", data.id);
+    brandData.append("name", data.name);
+    brandData.append("description", data.description);
+    brandData.append("status", data.status);
+    brandData.append(
+      "image",
+      image.files.length === 0 ? null : image.files[0]
+    );
+
+    try {
+      const result = await BrandServices.update(editId, brandData);
+      if (result.status) {
+        alert(result.message);
+        setEditId(null);
+        setLoad((prevLoad) => prevLoad + 1);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+
+  const handleXoa = async (id) => {
+    try {
+      const result = await BrandServices.delete(id);
+      if (result.status) {
+        alert(result.message);
+        setLoad((prevLoad) => prevLoad + 1);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
+
   return (
     <div className="card">
       <div className="card-header">
         <div className="row">
           <div className="col-6">
             <strong className="fs-4">Thương hiệu</strong>
-          </div>
-          <div className="col-6 text-end">
-            <Link to="/admin/brand/list" className="btn btn-sm btn-success">
-              Tất cả Thương Hiệu 
-            </Link>
           </div>
         </div>
       </div>
@@ -148,7 +225,7 @@ const BrandCreate = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* {category.map((cat, index) => (
+                {brands.map((cat, index) => (
                   <tr key={cat.id}>
                     <th scope="row" className="text-center">
                       {index}
@@ -156,7 +233,7 @@ const BrandCreate = () => {
                     <td>
                       <img
                         className="img-fluid"
-                        src={ImgUrl + "categories/" + cat.image}
+                        src={ImgUrl + "brand/" + cat.image}
                         alt={cat.name}
                       />
                     </td>
@@ -165,7 +242,7 @@ const BrandCreate = () => {
                     <td>{cat.description}</td>
                     <td>{cat.id}</td>
                     <th>
-                    {editId === cat.id ? (
+                      {editId === cat.id ? (
                         <button
                           className="btn btn-success mx-1"
                           onClick={() => handleSave(cat.id)}
@@ -188,7 +265,7 @@ const BrandCreate = () => {
                       </button>
                     </th>
                   </tr>
-                ))} */}
+                ))}
               </tbody>
             </table>
           </div>

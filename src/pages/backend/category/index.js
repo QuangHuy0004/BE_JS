@@ -1,4 +1,3 @@
-import Category from './Category';
-import CategoryList from './CategoryList';
+import Category from '../category/Category';
 
-export {CategoryList , Category};
+export { Category};

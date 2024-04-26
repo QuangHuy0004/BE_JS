@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
-
+import { toast } from "react-hot-toast";
+import BannerService from "../../../services/BannerServices";
 const BannerCreate = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
     link: "",
-    description: "",
-    position: 0,
-    img: "",
+    sort_order: "",
+    position: "slideshow",
     status: "1",
   });
   const handleChange = (event) => {
@@ -18,15 +19,32 @@ const BannerCreate = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(data);
-    setData({
-      name: "",
-      link: "",
-      description: "",
-      position: 0,
-      img: "",
-      status: "1",
-    });
+    const image = document.querySelector("#image");
+    const banner = new FormData();
+    banner.append("name", data.name);
+    banner.append("link", data.link);
+    banner.append("sort_order", data.sort_order);
+    banner.append("position", data.position);
+    banner.append("status", data.status);
+    banner.append("image",image.files.length === 0 ? null : image.files[0]);
+    //Service them
+    (async () => {
+      const result = await BannerService.store(banner);
+      if (result.status === true) {
+        toast.success("Thêm thành công");
+        setData({
+          name: "",
+          link: "",
+          sort_order: "",
+          position: "slideshow",
+          status: "1",
+        });
+        image.value = null;
+        navigate("/admin/banner"); // Chuyển hướng về trang "/admin/banner"
+      } else {
+        toast.error("Thêm thất bại");
+      }
+    })();
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -78,53 +96,51 @@ const BannerCreate = () => {
                   type="text"
                   id="inputLink"
                   className="form-control"
-                  name="link"
+                  name="inputLink"
                   value={data.link || ""}
                   placeholder="Nhập liên kết"
                   onChange={handleChange}
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="inputDes" className="form-label">
-                  <strong>Mô tả (*)</strong>
+                <label htmlFor="sort_order" className="form-label">
+                  <strong>Thứ tự (*)</strong>
                 </label>
-                <textarea
-                  rows={6}
-                  id="inputDes"
-                  name="description"
-                  value={data.description || ""}
-                  onChange={handleChange}
+                <input
+                  type="text"
+                  id="sort_order"
                   className="form-control"
-                  placeholder="Nhập tên mô tả"
-                  required
-                  ></textarea>
+                  name="sort_order"
+                  value={data.sort_order || ""}
+                  placeholder="Nhập thứ tự"
+                  onChange={handleChange}
+                />
               </div>
             </div>
             <div className="col-md-3">
               <div className="mb-3">
-                <label className="form-label">
+                <label htmlFor="position" className="form-label">
                   <strong>Vị trí (*)</strong>
                 </label>
-                <select
-                  className="form-select"
+                <input
+                  type="text"
+                  id="position"
+                  className="form-control"
                   name="position"
-                  value={data.position || 1}
+                  value={data.position || ""}
+                  placeholder="Nhập vị trí(slideshow)"
                   onChange={handleChange}
-                >
-                  <option value="0">Chọn vị trí</option>
-                </select>
+                />
               </div>
               <div className="mb-3">
-                <label htmlFor="selectImg" className="form-label">
+                <label className="form-label">
                   <strong>Hình ảnh (*)</strong>
                 </label>
                 <input
                   type="file"
-                  name="img"
-                  value={data.img || ""}
                   onChange={handleChange}
                   className="form-control"
-                  id="selectImg"
+                  id="image"
                 />
               </div>
               <div className="mb-3">

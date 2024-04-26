@@ -1,12 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
+import { toast } from "react-hot-toast";
+import TopicServices from "../../../services/TopicServices";
+import PostService from "../../../services/PostServices";
 const PageCreate = () => {
+  const [topic, setTopic] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    (async () => {
+      const response = await TopicServices.get_list();
+      setTopic(response.topic);
+    })();
+  }, []);
   const [data, setData] = useState({
+    topic_id: "",
     title: "",
     detail: "",
+    type: "page",
     description: "",
-    img: "",
     status: "1",
   });
   const handleChange = (event) => {
@@ -16,14 +28,34 @@ const PageCreate = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(data);
-    setData({
-      title: "",
-      detail: "",
-      description: "",
-      img: "",
-      status: "1",
-    });
+    const image = document.querySelector("#image");
+    const post = new FormData();
+    post.append("topic_id", data.topic_id);
+    post.append("title", data.title);
+    post.append("detail", data.detail);
+    post.append("description", data.description);
+    post.append("type", data.type);
+    post.append("status", data.status);
+    post.append("image", image.files.length === 0 ? null : image.files[0]);
+    //Service them
+    (async () => {
+      const result = await PostService.store(post);
+      if (result.status === true) {
+        toast.success("Thêm thành công");
+        setData({
+          topic_id: "",
+          title: "",
+          detail: "",
+          type: "page",
+          description: "",
+          status: "1",
+        });
+        image.value = null;
+        navigate("/admin/page"); //chuyen trang
+      } else {
+        toast.error("Thêm thất bại");
+      }
+    })();
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -54,7 +86,7 @@ const PageCreate = () => {
             <div className="col-md-9">
               <div className="mb-3">
                 <label htmlFor="inputTitle" className="form-label">
-                  <strong>Tiêu đề bài viết (*)</strong>
+                  <strong>Tiêu đề (*)</strong>
                 </label>
                 <input
                   type="text"
@@ -95,21 +127,37 @@ const PageCreate = () => {
                   className="form-control"
                   placeholder="Nhập mô tả"
                   required
-                  ></textarea>
+                ></textarea>
               </div>
             </div>
             <div className="col-md-3">
               <div className="mb-3">
-                <label htmlFor="selectImg" className="form-label">
+                <label className="form-label">
+                  <strong>Chủ đề</strong>
+                </label>
+                <select
+                  className="form-select"
+                  name="topic_id"
+                  value={data.topic_id || "0"}
+                  onChange={handleChange}
+                >
+                  <option >Chọn chủ đề</option>
+                  {topic &&
+                    topic.length > 0 &&
+                    topic.map((topic) => {
+                      return <option key={topic.id} value={topic.id}>{topic.name}</option>;
+                    })}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">
                   <strong>Hình ảnh (*)</strong>
                 </label>
                 <input
                   type="file"
-                  name="img"
-                  value={data.img || ""}
                   onChange={handleChange}
                   className="form-control"
-                  id="selectImg"
+                  id="image"
                 />
               </div>
               <div className="mb-3">

@@ -1,4 +1,6 @@
+
+import TopicEdit from "./TopicEdit";
+import TopicList from "./TopicList";
+import TopicDetail from "./TopicDetail";
 import TopicCreate from './TopicCreate';
-import TopicList from './../topic/TopicList';
-export {TopicCreate};
-export {TopicList};
+export { TopicEdit, TopicList ,TopicDetail, TopicCreate};

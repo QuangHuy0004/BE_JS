@@ -1,86 +1,117 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { IoIosAdd } from "react-icons/io";
-import { BiEdit } from "react-icons/bi";
-import { FaTrashAlt } from "react-icons/fa";
-import ProductServices from '../../../services/ProductServices';
-import axios from '../../../httpAxios';
-
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { TbPlus } from "react-icons/tb";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { toast } from "react-hot-toast";
+import { IoEye } from "react-icons/io5";
+import ProductService from "../../../services/ProductServices";
+import { ImgUrl } from "../../../basePath/ImgUrl";
 const ProductList = () => {
-    const path = "../../";
-    const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const handleDelete = async (id) => {
+    try {
+      const confirmed = window.confirm("Bạn có chắc chắn muốn xóa này?");
+      if (confirmed === true) {
+        await ProductService.delete(id);
+        setProducts(products.filter((b) => b.id !== id));
+        toast.success('Xóa thành công!'); // Hiển thị thông báo thành công
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Đã xảy ra lỗi khi xóa.'); // Hiển thị thông báo lỗi
+    }
+  };
+  useEffect(() => {
+    (async () => {
+      const result = await ProductService.get_list();
+      console.log("kq",result);
+      setProducts(result.products); 
+    })();
+  }, []);
 
-    useEffect(() => {
-        (async () => {
-            const result = await ProductServices.get_list();
-            setProducts(result.products);
-        })();
-    }, []);
-
-    const handleDelete = async (productId) => {
-        try {
-            await axios.delete(`/products/delete/${productId}`);
-            setProducts(products.filter(product => product.id !== productId)); 
-            alert("xóa sản phẩm thành công")
-        } catch (error) {
-            console.error('Error deleting product:', error);
-           alert("Xóa sản phẩm thất bại");
-        }
-    };
-
-    return (
-        <div className='card'>
-            <div className='card-header'>
-                <div className='row'>
-                    <div className='col-6'>
-                        <strong>Tất cả sản phẩm</strong>
-                    </div>
-                    <div className='col-6 text-end'>
-                        <Link to="/admin/product/create" className='btn btn-sm btn-success'><IoIosAdd className='fs-3' />Thêm sản phẩm</Link>
-                    </div>
-                </div>
-            </div>
-            <div className='card-body'>
-                <table className='table table-bordered table-striped'>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Hình</th>
-                            <th>Tên</th>
-                            <th>Danh mục</th>
-                            <th>Thương hiệu</th>
-                            <th>Chức năng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products && products.length > 0 ? (
-                            products.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td><img width={100} src={path + item.image} alt={item.image} /></td>
-                                    <td>{item.name}</td>
-                                    <td>{item.category_id}</td>
-                                    <td>{item.brand_id}</td>
-                                    <td>
-                                        <BiEdit className='fs-3 me-2' style={{ color: "orange", cursor: "pointer" }} />
-                                        <FaTrashAlt
-                                            className='fs-4'
-                                            style={{ color: "red", cursor: "pointer" }}
-                                            onClick={() => handleDelete(item.id)} 
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="6">Không có sản phẩm nào</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+  return (
+    <div className="card">
+      <div className="card-header">
+        <div className="row">
+          <div className="col-6">
+            <strong className="text-danger">Tất cả sản phẩm</strong>
+          </div>
+          <div className="col-6 text-end">
+            <Link className="btn btn-sm btn-success" to="/admin/product/create">
+              <TbPlus className="me-1" />
+              Thêm sản phẩm
+            </Link>
+          </div>
         </div>
-    );
+      </div>
+      <div className="card-body p-0">
+        <table class="table mb-0 table-bordered table-hover table-striped">
+          <thead>
+            <tr>
+              <th scope="col">
+                <input type="checkbox" />
+              </th>
+              <th scope="col" style={{ width: "100px" }}>
+                Hình ảnh
+              </th>
+              <th scope="col">Tên sản phẩm</th>
+              <th scope="col">Danh mục</th>
+              <th scope="col">Thương hiệu</th>
+              <th scope="col">Chức năng</th>
+              <th scope="col">ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length > 0 &&
+              products.map((product, index) => {
+                console.log(product.image);
+                return (
+                  <tr key={index}>
+                    <th scope="row">
+                      <input type="checkbox" />
+                    </th>
+                    <td>
+                      <img
+                        className="img-fluid"
+                        src={` ${ImgUrl}product/${product.image}`}
+                        alt={product.name}  
+                      />
+                    </td>
+                    <td>{product.name}</td>
+                    <td>{product.brand_name}</td>
+                    <td>{product.category_name}</td>
+                    <td>
+                    <Link
+                        className="btn btn-sm btn-success me-2 mb-1"
+                        to={"/admin/product/show/" + product.id}
+                      >
+                        <IoEye className="m-1 fs-5" />
+                        Show
+                      </Link>
+                      <Link
+                        className="btn btn-sm btn-warning me-2 mb-1"
+                        to={"/admin/product/edit/" + product.id}
+                      >
+                        <FaEdit className="m-1 fs-5" />
+                        Edit
+                      </Link>
+                      <button 
+                      onClick={() => {handleDelete(product.id)}} 
+                      className="btn btn-sm btn-danger mb-1">
+                        <MdDelete className="m-1 fs-5" />
+                        Delete
+                      </button>
+                    </td>
+                    <td>{product.id}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default ProductList;

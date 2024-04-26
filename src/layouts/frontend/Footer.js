@@ -1,4 +1,22 @@
+import { useEffect, useState } from "react";
+import PostService from "../../services/PostServices";
+
 const Footer = () => {
+  const [limit, setLimit] = useState(6);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const result = await PostService.list("page", 1, limit);
+              setPosts(result.post);
+              console.log(result);
+          } catch (error) {
+              console.error('Error fetching ser:', error);
+          }
+      };
+      fetchData();
+  }, [limit]);
   return (
     <>
       <footer className="footer">
@@ -41,21 +59,14 @@ const Footer = () => {
             </div>
             <div className="col-lg-2 col-md-3 col-sm-6">
               <div className="footer__widget">
-                <h6>Shopping</h6>
-                <ul>
+                <h6>Services</h6>
+                {posts && posts.map((item, index) => (
+                <ul key={index}>
                   <li>
-                    <a href="#">Contact Us</a>
-                  </li>
-                  <li>
-                    <a href="#">Payment Methods</a>
-                  </li>
-                  <li>
-                    <a href="#">Delivary</a>
-                  </li>
-                  <li>
-                    <a href="#">Return &amp; Exchanges</a>
+                    <a href="http://localhost:3000/about">{item.title}</a>
                   </li>
                 </ul>
+                ))}
               </div>
             </div>
             <div className="col-lg-3 offset-lg-1 col-md-6 col-sm-6">

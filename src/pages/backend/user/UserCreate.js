@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
+import { toast } from "react-hot-toast";
+import UserServices from "../../../services/UserServices";
 const UserCreate = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     username: "",
     password: "",
-    checkPassword: "",
     email: "",
-    checkEmail: "",
     phone: "",
     name: "",
-    gender: 1,
+    gender: "1",
+    roles: "1",
     address: "",
-    img: "",
     status: "1",
   });
   const handleChange = (event) => {
@@ -22,20 +23,41 @@ const UserCreate = () => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(data);
-    setData({
-      username: "",
-      password: "",
-      checkPassword: "",
-      email: "",
-      checkEmail: "",
-      phone: "",
-      name: "",
-      gender: 1,
-      address: "",
-      img: "",
-      status: "1",
-    });
+    const image = document.querySelector("#image");
+    const user = new FormData();
+    user.append("username", data.username);
+    user.append("password", data.password);
+    user.append("email", data.email);
+    user.append("phone", data.phone);
+    user.append("name", data.name);
+    user.append("gender", data.gender);
+    user.append("roles", data.roles);
+    user.append("address", data.address);
+    user.append("status", data.status);
+    user.append("image", image.files.length === 0 ? null : image.files[0]);
+    //Service them
+    (async () => {
+      const result = await UserServices.store(user);
+      if (result.status === true) {
+        toast.success("Thêm thành công");
+        setData({
+          username: "",
+          password: "",
+          email: "",
+          phone: "",
+          name: "",
+          gender: "1",
+          roles: "1",
+          address: "",
+          status: "1",
+        });
+        image.value = null;
+        navigate("/admin/user"); //chuyen trang
+      } else {
+        console.log(result);
+        toast.error("Thêm thất bại");
+      }
+    })();
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -46,7 +68,14 @@ const UserCreate = () => {
               <strong className="fs-4">Thêm thành viên</strong>
             </div>
             <div className="col-6 text-end">
-              <Link to="/admin/user" className="btn btn-sm btn-info text-white me-2" ><FaArrowLeft className="me-1" />Về danh sách</Link>
+              <Link
+                to="/admin/user"
+                className="btn btn-sm btn-info text-white me-2"
+              >
+                <FaArrowLeft className="me-1" />
+                Về danh sách
+              </Link>
+
               <button type="submit" className="btn btn-sm btn-success">
                 <FaSave className="me-1" />
                 Lưu
@@ -88,21 +117,6 @@ const UserCreate = () => {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="checkPassword" className="form-label">
-                  <strong>Xác nhận mật khẩu (*)</strong>
-                </label>
-                <input
-                  type="text"
-                  id="checkPassword"
-                  className="form-control"
-                  name="checkPassword"
-                  value={data.checkPassword || ""}
-                  onChange={handleChange}
-                  placeholder="Xác nhận mật khẩu"
-                  required
-                />
-              </div>
-              <div className="mb-3">
                 <label htmlFor="inputEmail" className="form-label">
                   <strong>Email (*)</strong>
                 </label>
@@ -114,22 +128,6 @@ const UserCreate = () => {
                   value={data.email || ""}
                   onChange={handleChange}
                   placeholder="Email"
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="checkEmail" className="form-label">
-                  <strong>Xác nhận Email (*)</strong>
-                </label>
-                <input
-                  type="email"
-                  id="checkEmail"
-                  className="form-control"
-                  name="checkEmail"
-                  value={data.checkEmail || ""}
-                  onChange={handleChange}
-                  placeholder="Xác nhận Email"
-                  required
                 />
               </div>
               <div className="mb-3">
@@ -144,7 +142,6 @@ const UserCreate = () => {
                   value={data.phone || ""}
                   onChange={handleChange}
                   placeholder="Điện thoại"
-                  required
                 />
               </div>
             </div>
@@ -174,7 +171,8 @@ const UserCreate = () => {
                   value={data.gender || 1}
                   onChange={handleChange}
                 >
-                  <option value="0">Chọn giới tính</option>
+                  <option value="1">Nam</option>
+                  <option value="0">Nữ</option>
                 </select>
               </div>
               <div className="mb-3">
@@ -188,21 +186,17 @@ const UserCreate = () => {
                   onChange={handleChange}
                   className="form-control"
                   placeholder="Địa chỉ"
-                  required
                   id="inputAddress"
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="selectImg" className="form-label">
+                <label className="form-label">
                   <strong>Hình ảnh đại diện (*)</strong>
                 </label>
                 <input
                   type="file"
-                  name="img"
-                  value={data.img || ""}
-                  onChange={handleChange}
                   className="form-control"
-                  id="selectImg"
+                  id="image"
                 />
               </div>
               <div className="mb-3">

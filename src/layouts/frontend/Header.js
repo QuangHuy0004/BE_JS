@@ -1,6 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MainMenu from "./MainMenu";
+import { FaShoppingBag } from "react-icons/fa";
+import { useSelector } from "react-redux";
 const Header = () => {
+  const navigate = useNavigate();
+  let cartItems = useSelector((state) => state.cart.items);
+  const totalItems = cartItems.reduce((total, item) => {
+    return total + parseInt(item.count);
+  }, 0);
   return (
     <>
       <section className="header">
@@ -42,11 +49,20 @@ const Header = () => {
             <MainMenu />
             </div>
             <div className="col-lg-3 col-md-3">
-              <div className="header__nav__option">
-                <Link to="#" className="search-switch"><img src="img/icon/search.png" alt=""/></Link>
-                <Link to="#"><img src="img/icon/heart.png" alt="" /></Link>
-                <Link to="http://localhost:3000/shopping-cart"><img src="img/icon/cart.png" alt="" /> <span>0</span></Link>
-              </div>
+            <div
+                  onClick={() => {
+                    navigate("/shopping-cart");
+                  }}
+                  className="btn btn-outline-dark position-relative mt-4"
+                >
+                  <FaShoppingBag className="fs-3"/>
+                  <div className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                    {totalItems}
+                  </div>
+                </div>
+              {/* <div className="header__nav__option mt-1">
+                <Link to="http://localhost:3000/shopping-cart"><img className="p-1 " width="120%" src="https://static.vecteezy.com/system/resources/previews/000/616/943/original/vector-shopping-bag-icon.jpg" alt="" /> <span >{totalItems}</span></Link>
+              </div> */}
             </div>
           </div>
           <div className="canvas__open"><i className="fa fa-bars"></i></div>

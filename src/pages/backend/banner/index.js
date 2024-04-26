@@ -1,3 +1,7 @@
+
 import BannerList from './BannerList';
 import BannerCreate from './BannerCreate';
-export {BannerList,BannerCreate};
+import BannerEdit from './BannerEdit';
+import BannerDetail from './BannerDetail';
+
+export {BannerList,BannerCreate,BannerEdit,BannerDetail};

@@ -8,7 +8,7 @@ const MainMenuItem = (props) => {
 
   useEffect(() => {
     const fetchMenus = async () => {
-      const result = await MenuService.mainmenu(menu.id, 10);
+      const result = await MenuService.mainmenu(menu.id, 10,1);
       setMenus(result.menus);
     };
     fetchMenus();
@@ -17,9 +17,9 @@ const MainMenuItem = (props) => {
   return (
     <>
       {menus && menus.length > 0 ? (
-        <li className="nav-item dropdown">
+        <li className="nav-item dropdown ">
           <Link
-            className="nav-link dropdown-toggle"
+            className="nav-link "
             to="/"
             role="button"
             data-bs-toggle="dropdown"
@@ -27,7 +27,7 @@ const MainMenuItem = (props) => {
           >
             {menu.name}
           </Link>
-          <ul className="dropdown-menu">
+          <ul className="dropdown-menu " >
             {menus.map((menusub, index) => (
               <li key={index}>
                 <Link className="dropdown-item" to={`/${menusub.link}`}>
@@ -39,11 +39,7 @@ const MainMenuItem = (props) => {
         </li>
       ) : (
         <li className="nav-item">
-          <Link
-            className="nav-link active"
-            aria-current="page"
-            to={menu.link}
-          >
+          <Link className="nav-link active" aria-current="page" to={menu.link}>
             {menu.name}
           </Link>
         </li>
